@@ -29,6 +29,8 @@
     chev: '<svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>',
   };
 
+  /* نسخه‌ی منتشرشده روی GitHub Pages: بدون بک‌اند؛ فرم پیام و ورود مدیر معنا ندارند */
+  const STATIC = /\.github\.io$/i.test(location.hostname);
   let S = {};          // تنظیمات سایت
   let timers = [];     // تایمرهای صفحه‌ی جاری
   /* ویدیوهای آپارات: فقط شناسه‌ی ویدیو استخراج می‌شود و آدرس تعبیه از روی آن ساخته می‌شود */
@@ -110,7 +112,7 @@
           ${S.phone ? `<li dir="ltr" style="text-align:right">${esc(S.phone)}</li>` : ''}${S.email ? `<li>${esc(S.email)}</li>` : ''}
           ${/^https:\/\//.test(S.bale || '') ? `<li><a href="${esc(S.bale)}" target="_blank" rel="noopener noreferrer">کانال ما در بله</a></li>` : ''}${/^https:\/\//.test(S.aparat || '') ? `<li><a href="${esc(S.aparat)}" target="_blank" rel="noopener noreferrer">کانال ما در آپارات</a></li>` : ''}</ul></div>
       </div>
-      <div class="copy"><span>© ${new Date().toLocaleDateString('fa-IR-u-ca-persian', { year: 'numeric' })} ${name}؛ همه‌ی حقوق محفوظ است.</span><a href="#/admin">ورود مدیر</a></div>
+      <div class="copy"><span>© ${new Date().toLocaleDateString('fa-IR-u-ca-persian', { year: 'numeric' })} ${name}؛ همه‌ی حقوق محفوظ است.</span>${STATIC ? '' : '<a href="#/admin">ورود مدیر</a>'}</div>
     </div>`;
   }
   function toggleMenu(force) {
@@ -510,15 +512,16 @@
           ${S.instagram ? `<div class="info-item reveal"><div><b>اینستاگرام</b><div class="muted" dir="ltr" style="text-align:right">${esc(S.instagram)}</div></div></div>` : ''}
           ${S.telegram ? `<div class="info-item reveal"><div><b>تلگرام</b><div class="muted" dir="ltr" style="text-align:right">${esc(S.telegram)}</div></div></div>` : ''}
           ${/^https:\/\//.test(S.map_url || '') ? `<a class="btn btn--ghost reveal" href="${esc(S.map_url)}" target="_blank" rel="noopener noreferrer">مشاهده روی نقشه</a>` : ''}</div>
-        <form class="f reveal" id="cform" novalidate style="--d:.15s">
+        ${STATIC ? `<div class="info reveal"><h2 style="font-size:1.6rem">ارتباط با ما</h2><p class="muted">برای ارتباط، از کانال‌ها و راه‌های بالا استفاده کنید${/^https:\/\//.test(S.bale || '') ? ` یا در <a href="${esc(S.bale)}" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">بله</a> پیام بدهید` : ''}.</p></div>` : `<form class="f reveal" id="cform" novalidate style="--d:.15s">
           <h2 style="font-size:1.6rem">ارسال پیام</h2>
           <div class="field"><label for="cn">نام و نام خانوادگی *</label><input id="cn" name="name" maxlength="120" required autocomplete="name"></div>
           <div class="field"><label for="cp">شماره تماس</label><input id="cp" name="phone" dir="ltr" inputmode="tel" maxlength="40" autocomplete="tel" style="text-align:right"></div>
           <div class="field"><label for="ct">پیام شما *</label><textarea id="ct" name="text" maxlength="4000" required></textarea></div>
           <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div><button class="btn btn--solid" type="submit">ارسال پیام</button></div>
-        </form></div></section>`,
+        </form>`}</div></section>`,
       after() {
+        if (!$('#cform')) return;
         $('#cform').addEventListener('submit', async (e) => {
           e.preventDefault();
           const f = e.target, btn = $('button', f);
@@ -784,7 +787,7 @@
     await API.init();
     try { S = await API.settings(); } catch { S = {}; }
     renderChrome();
-    if (API.mode === 'demo') {
+    if (API.mode === 'demo' && !STATIC) {
       const r = document.createElement('div');
       r.className = 'ribbon'; r.innerHTML = '<span>پیش‌نمایش نمایشی؛ داده‌ها فقط در همین مرورگر ذخیره می‌شوند.</span><button type="button">بستن</button>';
       $('button', r).onclick = () => r.remove(); document.body.appendChild(r);
