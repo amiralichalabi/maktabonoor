@@ -1,0 +1,20 @@
+{
+  "name": "maktabonoor",
+  "version": "0.1.0",
+  "description": "وب‌سایت مکتب النور - اطلاع‌رسانی مجموعه فرهنگی و آموزشی",
+  "private": true,
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "build:preview": "node scripts/build-preview.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.4.0"
+  }
+}
