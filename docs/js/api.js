@@ -7,7 +7,7 @@
 (function () {
   const MAX_IMAGES = { reports: 12, programs: 1, announcements: 1, articles: 1, people: 1, slides: 1 };
   const REQUIRED = { reports: ['title', 'body'], programs: ['title'], announcements: ['title', 'body'], articles: ['title', 'body'], people: ['name'], slides: ['title'] };
-  const LS_KEY = 'maktabonoor_demo_v2';
+  const LS_KEY = 'maktabonoor_demo_v3';
 
   let mode = 'live';
   let demo = null;
@@ -50,9 +50,13 @@
 
   async function loadDemo() {
     let seed = window.__SEED__;
-    const sig = seed ? JSON.stringify(seed).length : 0;
-    try { const saved = localStorage.getItem(LS_KEY); if (saved) { const d = JSON.parse(saved); if (d.sig === sig) { demo = d; return; } } } catch { /* ignore */ }
-    if (!seed) { try { seed = await (await fetch('data/seed.json')).json(); } catch { seed = {}; } }
+    let failed = false;
+    if (!seed) {
+      try { const r = await fetch('data/seed.json', { cache: 'no-cache' }); if (!r.ok) throw new Error(r.status); seed = await r.json(); }
+      catch { seed = {}; failed = true; }
+    }
+    const sig = failed ? 0 : JSON.stringify(seed).length;
+    if (!failed) { try { const saved = localStorage.getItem(LS_KEY); if (saved) { const d = JSON.parse(saved); if (d.sig === sig && sig > 0) { demo = d; return; } } } catch { /* ignore */ } }
     demo = { settings: seed.settings || {}, messages: [], seq: 0, sig };
     const now = Date.now();
     for (const res of Object.keys(MAX_IMAGES)) {
@@ -61,7 +65,7 @@
         created_at: new Date(now - i * 86400000).toISOString(),
       }));
     }
-    persist();
+    if (!failed) persist();
   }
   function persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(demo)); } catch { /* حجم پر شد */ } }
 
