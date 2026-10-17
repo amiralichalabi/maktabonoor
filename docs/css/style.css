@@ -545,3 +545,15 @@ h1, h2 { font-weight: 800; letter-spacing: -.01em; }
   .slide-cap { padding-bottom: 4.2rem; }
 }
 @media (hover: none) { .card:hover, .prow:hover, .ctile:hover { transform: none; } }
+
+/* ---- revision 3 ---- */
+.sec--light .pattern { opacity: .35; }
+.sec--light:has(.contact-grid) .pattern, .sec--light:has(form.f) .pattern { display: none; }
+.field input, .field textarea, .field select { background: #fff; border-radius: 6px; }
+.info-item { background: #fff; border-radius: 8px; align-items: flex-start; }
+.info-item > div { flex: 1; min-width: 0; }
+.gallery:has(button:only-child) { grid-template-columns: 1fr; max-width: 760px; margin-inline: auto; }
+.gallery:has(button:only-child) button { aspect-ratio: 4 / 3; cursor: zoom-in; }
+.gallery:has(button:only-child) img { object-fit: contain; background: #f4f4f2; }
+.gallery:has(button:nth-child(2)):not(:has(button:nth-child(3))) { grid-template-columns: repeat(2, 1fr); }
+.gallery button { border-radius: 8px; }
