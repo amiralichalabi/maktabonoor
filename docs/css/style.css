@@ -557,3 +557,17 @@ h1, h2 { font-weight: 800; letter-spacing: -.01em; }
 .gallery:has(button:only-child) img { object-fit: contain; background: #f4f4f2; }
 .gallery:has(button:nth-child(2)):not(:has(button:nth-child(3))) { grid-template-columns: repeat(2, 1fr); }
 .gallery button { border-radius: 8px; }
+
+/* ---- revision 4: اعداد دوره‌ها ---- */
+.ctile { text-align: center; justify-items: center; align-content: center; grid-template-rows: auto auto auto 3.4em; row-gap: .15rem; padding: 1.2rem 1rem; }
+.ctile .cl { font-size: .9rem; opacity: .75; line-height: 1.4; }
+.ctile .cn { font-size: 3.4rem; font-weight: 700; line-height: 1.25; font-variant-numeric: normal; letter-spacing: 0; padding-block: .1rem; }
+.ctile .cn--w { font-size: 1.7rem; font-weight: 800; line-height: 1.5; }
+.ctile .cc { font-size: .85rem; line-height: 1.5; padding: .05rem .8rem; border-radius: 999px; background: rgba(255,255,255,.45); }
+.ctile .cm { font-size: .76rem; line-height: 1.7; align-self: start; margin-top: .35rem; max-width: 100%; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cg-head { gap: .8rem; align-items: center; }
+.cg-n { min-width: 48px; height: 48px; padding: 0; font-weight: 700; font-size: 1.2rem; line-height: 1; font-variant-numeric: normal; letter-spacing: 0; padding-top: .12em; box-sizing: border-box; }
+.cg-head h2 { line-height: 1.4; }
+@media (max-width: 600px) { .ctile .cn { font-size: 2.6rem; } .ctile .cn--w { font-size: 1.3rem; } .ctile { grid-template-rows: auto auto auto; } }
+.ctile { align-content: start; padding-top: 1.5rem; }
+.ctile .cn--w { min-height: 3.4rem; display: grid; align-items: center; }
