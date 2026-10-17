@@ -149,12 +149,15 @@
       <h3>${esc(r.title)}</h3><p class="muted">${esc(cut(r.body, 110))}</p></div></a>`;
   };
 
-  const programRow = (p, i = 0) => `<a class="prow reveal" ${stagger(i)} href="#/programs/${p.id}" data-g="${esc(p.kind)}">
-    <div class="when">${p.day ? `<b>${esc(p.day)}</b>` : ''}${p.time ? `<span class="muted">${esc(p.time)}</span>` : ''}</div>
-    <div><h3>${esc(p.title)}</h3>${[p.speaker, p.description].filter(Boolean).map((x) => `<p class="muted">${esc(cut(x, 140))}</p>`).join('')}</div>
-    <div class="where">${p.kind ? `<span class="chip">${esc(p.kind)}</span>` : ''}${p.place ? `<span class="muted">${esc(p.place)}</span>` : ''}
-      ${(p.images && p.images[0]) || aparatIds(p.videos).length ? `<span class="muted">${p.images && p.images[0] ? '📷 عکس ' : ''}${aparatIds(p.videos).length ? '▶ ویدیو' : ''}</span>` : ''}
-      <span class="go">مشاهده ${ICON.arrow}</span></div></a>`;
+  const kindColor = (k) => { const i = PROGRAM_KINDS.indexOf(k); return i < 0 ? '#0c0c0c' : PALETTE[i % PALETTE.length]; };
+  const programRow = (p, i = 0) => {
+    const media = [p.images && p.images[0] ? '📷 عکس' : '', aparatIds(p.videos).length ? '▶ ویدیو' : ''].filter(Boolean).join('  ');
+    const meta = [p.day, p.time, p.place].filter(Boolean).map((x) => `<span>${esc(x)}</span>`).join('') + (media ? `<span class="pm-media">${media}</span>` : '');
+    return `<a class="prow reveal" style="--k:${kindColor(p.kind)};--d:${Math.min(i, 8) * 0.06}s" href="#/programs/${p.id}" data-g="${esc(p.kind)}">
+    <div class="pmain">${p.kind ? `<span class="pkind">${esc(p.kind)}</span>` : ''}<h3>${esc(p.title)}</h3>${[p.speaker, p.description].filter(Boolean).slice(0, 1).map((x) => `<p class="muted">${esc(cut(x, 130))}</p>`).join('')}</div>
+    ${meta ? `<div class="pmeta">${meta}</div>` : ''}
+    <span class="go" aria-hidden="true">${ICON.arrow}</span></a>`;
+  };
 
   const articleCard = (a, i = 0) => `<a class="card reveal" ${stagger(i)} href="#/articles/${a.id}" data-g="${esc(a.category)}">
     ${thumb(a, a.title)}<div class="card-body"><div class="meta">${a.category ? `<span class="chip">${esc(a.category)}</span>` : ''}<span class="muted">${fdate(a.created_at)}</span></div>
@@ -192,7 +195,7 @@
   /** اولویت: اسلایدهای آپلودشده ← اولین عکس گزارش‌ها ← اسلاید برند و آیات */
   function buildSlides(slides, reports) {
     const photos = slides.filter((s) => s.images && s.images[0])
-      .map((s) => ({ img: API.imgUrl(s.images[0]), title: s.title, sub: s.caption, link: s.link, tag: 'عکس منتخب' }));
+      .map((s) => ({ img: API.imgUrl(s.images[0]), title: s.title, sub: s.caption, link: s.link, tag: S.site_name || 'مکتب النور' }));
     if (photos.length) return photos;
     const fromReports = reports.filter((r) => r.images && r.images[0]).slice(0, 5)
       .map((r) => ({ img: API.imgUrl(r.images[0]), title: r.title, sub: courseLabel(r.group_name), link: `/reports/${r.id}`, tag: 'گزارش دوره‌ها' }));
@@ -297,7 +300,7 @@
     <section class="sec sec--soft"><div class="wrap">
       ${secHead('گزارش‌ها', 'تازه‌ترین گزارش دوره‌ها', '/reports')}
       <div class="cpills reveal">${courseKeys().map(pill).join('')}</div>
-      ${reports.length ? `<div class="grid">${reports.slice(0, 3).map(reportCard).join('')}</div>` : empty('هنوز گزارشی ثبت نشده است.')}
+      ${reports.length ? `<div class="grid grid--snap">${reports.slice(0, 3).map(reportCard).join('')}</div>` : empty('هنوز گزارشی ثبت نشده است.')}
     </div></section>
 
     <section class="sec sec--light"><div class="wrap">
